@@ -12,8 +12,8 @@ pip install -r requirements.txt
 
 Make an .env file with the following
 ```
-TOKEN = "your bot token (without quotes)"
-GUILD_IDS = "your server guild id (without quotes)"
+TOKEN = bot token
+GUILD_IDS = server guild id
 ```
 
 Run bot with 
