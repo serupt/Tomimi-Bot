@@ -1,9 +1,9 @@
 # Tomimi Bot
-A simple discord bot made using hikari-lightbulb. Currently, you can use it to play wordle.
+A simple discord bot made using [hikari](https://github.com/hikari-py/hikari/) and [lightbulb](https://github.com/tandemdude/hikari-lightbulb).
+Currently, you can use it to play wordle.
 
-To Use: 
+## Using the bot
 
-Run
 ```
 git clone https://github.com/serupt/Tomimi-Bot.git
 cd Tomimi-Bot
