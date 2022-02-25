@@ -1,3 +1,4 @@
+from ast import alias
 import os
 import hikari
 import lightbulb
@@ -39,11 +40,14 @@ async def ping(ctx: lightbulb.SlashContext) -> None:
     await ctx.respond(f"Pong! Latency: {bot.heartbeat_latency*1000:.2f}ms")
     
 @bot.command()
-@lightbulb.option("amount", "amount of message to delete (<100)", type=int)
+@lightbulb.add_checks(lightbulb.checks.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES),
+                      lightbulb.checks.bot_has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
+@lightbulb.option("amount", "amount of message to delete", type=int, required=True, max_value=100)
 @lightbulb.command("purge", "deletes a specified amount of messages")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def purge(ctx: lightbulb.SlashContext) -> None:
-    await bot.rest.delete_messages(ctx.channel_id, await bot.rest.fetch_messages(ctx.channel_id).limit(100))
+    await bot.rest.delete_messages(ctx.channel_id, await bot.rest.fetch_messages(ctx.channel_id).limit(ctx.options.amount))
+    await ctx.respond("Messages Deleted", delete_after=5)
     
 
 def run() -> None:

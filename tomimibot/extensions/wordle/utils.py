@@ -3,6 +3,7 @@ from typing import Optional
 
 import hikari
 import lightbulb
+import asyncio
 
 popular_words = open("tomimibot/extensions/wordle/dict-popular.txt").read().splitlines()
 all_words = set(word.strip() for word in open("tomimibot/extensions/wordle/dict-valid.txt"))
@@ -204,27 +205,35 @@ async def process_message_as_guess(bot: lightbulb.BotApp, event: hikari.GuildMes
     # check that the user is the one playing
     if ((embed.author.name)!=(event.message.author.username)):
         reply = (f'This game was started by {embed.author.name}. Start a new game with /wordle')
-        await event.message.respond(reply)
+        msg = await event.message.respond(reply)
         await event.message.delete()
+        await asyncio.sleep(2)
+        await msg.delete()
         return False
 
 
     # check that the game is not over
     if is_game_over(embed):
-        await event.message.respond("The game is already over. Start a new game with /wordle")
+        msg = await event.message.respond("The game is already over. Start a new game with /wordle")
         await event.message.delete()
+        await asyncio.sleep(2)
+        await msg.delete()
         return False
 
     # check that a single word is in the message
     if len(event.message.content.split()) > 1:
-        await event.message.respond("That is not a valid word.")
+        msg = await event.message.respond("That is not a valid word.")
         await event.message.delete()
+        await asyncio.sleep(2)
+        await msg.delete()
         return False
 
     # check that the word is valid
     if not is_valid_word(guess):
-        await event.message.respond("That is not a valid word.")
+        msg = await event.message.respond("That is not a valid word.")
         await event.message.delete()
+        await asyncio.sleep(2)
+        await msg.delete()
         return False
 
     # update the embed
