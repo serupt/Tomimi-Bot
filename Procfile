@@ -1,1 +1,1 @@
-Worker: python -m tomimibot
+Worker: docker-compose up -d
