@@ -16,12 +16,14 @@ bot = lightbulb.BotApp(
 @bot.listen()
 async def starting_load_extensions(_: hikari.StartingEvent) -> None:
     bot.load_extensions("tomimibot.extensions.wordle.utils")
+    bot.load_extensions("tomimibot.extensions.music.music")
 
 @bot.listen(hikari.StartedEvent)
 async def on_start(event):
     await bot.update_presence(activity=hikari.Activity(name="wordle. Use /wordle to play!"))
     
 @bot.command()
+@lightbulb.add_cooldown(30, 1, lightbulb.cooldowns.UserBucket)
 @lightbulb.command("wordle", "play wordle!")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def test(ctx: lightbulb.SlashContext) -> None:
