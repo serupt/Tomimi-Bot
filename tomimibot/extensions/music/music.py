@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from typing import Optional
 
@@ -98,7 +99,8 @@ async def join(ctx: lightbulb.Context) -> None:
     channel_id = await _join(ctx)
 
     if channel_id:
-        await ctx.respond(f"Joined <#{channel_id}>")
+        embed = hikari.Embed(title="**Joined voice channel.**", colour=0x6100FF)
+        await ctx.respond(embed)
 
 
 @plugin.command()
@@ -121,7 +123,8 @@ async def leave(ctx: lightbulb.Context) -> None:
     await plugin.bot.d.lavalink.remove_guild_node(ctx.guild_id)
     await plugin.bot.d.lavalink.remove_guild_from_loops(ctx.guild_id)
 
-    await ctx.respond("Left voice channel")
+    embed = hikari.Embed(title="**Left voice channel.**", colour=0x6100FF)
+    await ctx.respond(embed)
 
 
 @plugin.command()
@@ -158,8 +161,26 @@ async def play(ctx: lightbulb.Context) -> None:
     except lavasnek_rs.NoSessionPresent:
         await ctx.respond(f"Use `/join` first")
         return
+    
+    embed = (
+        hikari.Embed(
+            title=f"Added to Queue",
+            description=f"{query_information.tracks[0].info.title}",
+            color=0x3B9DFF,
+            timestamp=datetime.now().astimezone(),
+        )
+        .set_footer(
+            text=f"Requested by {ctx.member.display_name}",
+            icon=ctx.member.avatar_url or ctx.member.default_avatar_url   
+        )
+        .add_field(
+            "URL:",
+            f"{query_information.tracks[0].info.uri}"
+        )
+    )
 
-    await ctx.respond(f"Added to queue: {query_information.tracks[0].info.title}")
+    # await ctx.respond(f"Added to queue: {query_information.tracks[0].info.author}")
+    await ctx.respond(embed)
 
 
 @plugin.command()
@@ -228,9 +249,21 @@ async def now_playing(ctx: lightbulb.Context) -> None:
     if not node or not node.now_playing:
         await ctx.respond("Nothing is playing at the moment.")
         return
+    
+    embed = (
+        hikari.Embed(
+            title=f"Currently Playing...",
+            description=f"{node.now_playing.track.info.title}",
+            color=0x3B9DFF,
+        )
+        .add_field(
+            "URL:",
+            f"{node.now_playing.track.info.uri}"
+        )
+    )
 
     # for queue, iterate over `node.queue`, where index 0 is now_playing.
-    await ctx.respond(f"Now Playing: {node.now_playing.track.info.title}")
+    await ctx.respond(embed)
 
 
 @plugin.command()
